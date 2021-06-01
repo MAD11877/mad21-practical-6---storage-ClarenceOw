@@ -14,6 +14,8 @@ import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
+    private MyDBHandler DBHandler = new MyDBHandler(this, null, null, 1);
+    private User Number1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,37 +27,36 @@ public class MainActivity extends AppCompatActivity {
         TextView description = findViewById(R.id.Description);
         Button button = findViewById(R.id.follow);
         Intent receivedData = getIntent();
-        User Number1 = new User(receivedData.getStringExtra("Name"), receivedData.getStringExtra("Description"), receivedData.getIntExtra("Id",0), receivedData.getBooleanExtra("Followed",false));
-        //Button button = findViewById(R.id.follow);
+        //Number1 = new User(receivedData.getStringExtra("Name"), receivedData.getStringExtra("Description"), receivedData.getIntExtra("Id",0), receivedData.getBooleanExtra("Followed",false));
+        Number1 = DBHandler.findUser(receivedData.getStringExtra("Name"));
         name.setText(Number1.getName());
         description.setText(Number1.getDescription());
-
-        if (Number1.isFollowed() == false){
-            Number1.setFollowed(true);
+        Log.v("Check", "" + Number1.isFollowed());
+        if (Number1.isFollowed()){
             button.setText("Unfollow");
-            Log.v(TAG, "Following!");
+            Log.v(TAG, "Unfollowing!");
         }
         else{
-            Number1.setFollowed(false);
             button.setText("Follow");
-            Log.v(TAG, "Unfollowing!");
+            Log.v(TAG, "Following!");
         }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.v(TAG, "Button Clicked!");
-                if (Number1.isFollowed() == false){
-                    Number1.setFollowed(true);
-                    button.setText("Unfollow");
-                    Log.v(TAG, "Following!");
-                    Toast.makeText(getApplicationContext(), "Followed", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                if (Number1.isFollowed()){
                     Number1.setFollowed(false);
                     button.setText("Follow");
                     Log.v(TAG, "Unfollowing!");
                     Toast.makeText(getApplicationContext(), "Unfollowed", Toast.LENGTH_SHORT).show();
                 }
+                else{
+                    Number1.setFollowed(true);
+                    button.setText("Unfollow");
+                    Log.v(TAG, "Following!");
+                    Toast.makeText(getApplicationContext(), "Followed", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
         });
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.v(TAG, "App Stopped!");
+        DBHandler.updateUser(Number1);
     }
 
     @Override

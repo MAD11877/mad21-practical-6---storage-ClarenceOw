@@ -22,6 +22,8 @@ public class ListActivity extends AppCompatActivity {
     private final static String TAG = "Main ListActivity";
     public static Context context;
     ArrayList<User> uList = new ArrayList<>();
+    MyDBHandler DBHandler = new MyDBHandler(this, null, null, 1);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         context = this;
@@ -29,11 +31,11 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         for (int i=0;i<20;i++){
-            User NewUser = new User("Name-" + randomOTP(),"Description " + randomOTP(), i, randomfollow());
-            uList.add(NewUser);
+            User NewUser = new User("Name-" + randomOTP(),"Description " + randomOTP(),i+1, randomfollow());
+            //DBHandler.addUser(NewUser);
         }
         RecyclerView recyclerView = findViewById(R.id.UserRV);
-        UserAdapter UAdapter = new UserAdapter(uList);
+        UserAdapter UAdapter = new UserAdapter(DBHandler.getUser());
         LinearLayoutManager uLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(uLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

@@ -26,6 +26,15 @@ public class User {
         return id;
     }
 
+    public User() {
+    }
+
+    public User(String name, String description, boolean followed) {
+        this.name = name;
+        this.description = description;
+        this.followed = followed;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -39,9 +48,9 @@ public class User {
     }
 
     public User(String name, String description, int id, boolean followed) {
+        this.id = id;
         this.name = name;
         this.description = description;
-        this.id = id;
         this.followed = followed;
     }
 }
